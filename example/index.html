@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" value="text/html; charset: utf-8"/>
+        <title>Gamepad proxying to flash test</title>
+        <script src="http://ajax.googleapis.com/ajax/libs/swfobject/2.2/swfobject.js"></script>
+        <script type="text/javascript" src="GamepadProxy.js"></script>
+    </head>
+    <body>
+        <div id="testSWF"></div>
+        <script type="text/javascript">
+            swfobject.embedSWF("test.swf", "testSWF", 640, 360, "11.0.0", null, null, { allowscriptaccess:"always" }, { id:"realSWF"});
+            GamepadProxy.start("realSWF");
+        </script>
+    </body>
+</html>
