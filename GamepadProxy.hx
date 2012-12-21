@@ -37,9 +37,13 @@ class GamepadProxy {
     #if js
     static var gamePads : Array<Gamepad> = [];
 
+    inline static function getGamepadsFunc() : Void->Array<Gamepad> {
+        return untyped js.Browser.navigator.webkitGetGamepads;
+    }
+
     public static function getGamepads(){
-        if (untyped js.Browser.navigator.webkitGetGamepads != null){
-            var pads : Array<Gamepad> = untyped js.Browser.navigator.webkitGetGamepads();
+        if (getGamepadsFunc() != null){
+            var pads : Array<Gamepad> = getGamepadsFunc()();
             for (i in 0...pads.length)
                 gamePads[i] = pads[i];
         }
@@ -55,15 +59,14 @@ class GamepadProxy {
 
     public static function start(#if js swfID:String #end){
         #if js
-        var avail = untyped js.Browser.navigator.webkitGetGamepads != null;
-        if (!avail){
+        if (getGamepadsFunc() == null){
             js.Browser.window.addEventListener("MozGamepadConnected", function(e){
-                gamePads.push(untyped e.gamepad);
+                var g : Gamepad = untyped e.gamepad;
+                gamePads[g.index] = g;
             });
             js.Browser.window.addEventListener("MozGamepadDisconnected", function(e){
-                for (i in 0...gamePads.length)
-                    if (gamePads[i] != null && gamePads[i].index == untyped e.gamepad.index)
-                        gamePads[i] = null;
+                var g : Gamepad = untyped e.gamepad;
+                gamePads[g.index] = null;
             });
         }
         #end
