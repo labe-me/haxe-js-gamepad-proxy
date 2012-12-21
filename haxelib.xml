@@ -1,0 +1,7 @@
+<project name="GamepadProxy" url="https://github.com/labe-me/haxe-js-gamepad-proxy" license="MIT">
+    <user name=""/>
+    <tag v="flash"/>
+    <tag v="js"/>
+    <description>Proxy HTML5 GamePad to Flash using haxe.remoting.Connection</description>
+    <version name="1.0.0">Init</version>
+</project>
