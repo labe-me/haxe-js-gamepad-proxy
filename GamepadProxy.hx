@@ -1,19 +1,19 @@
 enum Button {
     FACE_1; // 0
-    FACE_2;
-    FACE_3;
-    FACE_4;
-    LEFT_SHOULDER;
-    RIGHT_SHOULDER;
-    LEFT_SHOULDER_BOTTOM;
-    RIGHT_SHOULDER_BOTTOM;
-    SELECT;
-    START;
-    LEFT_ANALOGUE_STICK;
-    RIGHT_ANALOGUE_STICK;
-    PAD_TOP;
-    PAD_BOTTOM;
-    PAD_LEFT;
+    FACE_2; // 1
+    FACE_3; // 2
+    FACE_4; // 3
+    LEFT_SHOULDER; // 4
+    RIGHT_SHOULDER; // 5
+    LEFT_SHOULDER_BOTTOM; // 6
+    RIGHT_SHOULDER_BOTTOM; // 7
+    SELECT; // 8
+    START; // 9
+    LEFT_ANALOGUE_STICK; // 10
+    RIGHT_ANALOGUE_STICK; // 11
+    PAD_TOP; // 12
+    PAD_BOTTOM; // 13
+    PAD_LEFT; // 14
     PAD_RIGHT; // 15
 }
 enum Axe {
@@ -31,7 +31,9 @@ typedef Gamepad = {
     var timestamp : Float;
 };
 
+@:expose
 class GamepadProxy {
+    public static var REMOTE_CX_NAME = "gamepad";
     public static var cnx : haxe.remoting.Connection = null;
 
     #if js
@@ -42,12 +44,26 @@ class GamepadProxy {
     }
 
     public static function getGamepads(){
+        trace("xxx");
         if (getGamepadsFunc() != null){
             var pads : Array<Gamepad> = getGamepadsFunc()();
             for (i in 0...pads.length)
                 gamePads[i] = pads[i];
         }
         return gamePads;
+    }
+
+    public static function setup(){
+        if (getGamepadsFunc() == null){
+            js.Browser.window.addEventListener("MozGamepadConnected", function(e){
+                var g : Gamepad = untyped e.gamepad;
+                gamePads[g.index] = g;
+            });
+            js.Browser.window.addEventListener("MozGamepadDisconnected", function(e){
+                var g : Gamepad = untyped e.gamepad;
+                gamePads[g.index] = null;
+            });
+        }
     }
     #end
 
@@ -59,23 +75,14 @@ class GamepadProxy {
 
     public static function start(#if js swfID:String #end){
         #if js
-        if (getGamepadsFunc() == null){
-            js.Browser.window.addEventListener("MozGamepadConnected", function(e){
-                var g : Gamepad = untyped e.gamepad;
-                gamePads[g.index] = g;
-            });
-            js.Browser.window.addEventListener("MozGamepadDisconnected", function(e){
-                var g : Gamepad = untyped e.gamepad;
-                gamePads[g.index] = null;
-            });
-        }
+        setup();
         #end
         var ctx = new haxe.remoting.Context();
         ctx.addObject("GamepadProxy", GamepadProxy);
         #if js
-        cnx = haxe.remoting.ExternalConnection.flashConnect("gamepad", swfID, ctx);
+        cnx = haxe.remoting.ExternalConnection.flashConnect(REMOTE_CX_NAME, swfID, ctx);
         #elseif flash
-        cnx = haxe.remoting.ExternalConnection.jsConnect("gamepad", ctx);
+        cnx = haxe.remoting.ExternalConnection.jsConnect(REMOTE_CX_NAME, ctx);
         #end
     }
 }
