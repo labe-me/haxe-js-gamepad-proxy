@@ -1,3 +1,6 @@
+import flash.geom.Vector3D;
+import flash.display.Bitmap;
+
 class Test {
     static var game : Game;
     public static var gamepads : Array<GamepadProxy.Gamepad> = [];
@@ -33,8 +36,6 @@ class Test {
     }
 }
 
-import flash.geom.Vector3D;
-import flash.display.Bitmap;
 @:bitmap("bullet.png") class BMBullet extends flash.display.BitmapData {}
 @:bitmap("ship.png") class BMShip extends flash.display.BitmapData {}
 

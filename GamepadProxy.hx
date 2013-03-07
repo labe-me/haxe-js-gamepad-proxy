@@ -44,7 +44,6 @@ class GamepadProxy {
     }
 
     public static function getGamepads(){
-        trace("xxx");
         if (getGamepadsFunc() != null){
             var pads : Array<Gamepad> = getGamepadsFunc()();
             for (i in 0...pads.length)
